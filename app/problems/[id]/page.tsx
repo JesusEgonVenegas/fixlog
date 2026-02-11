@@ -1,9 +1,11 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useTheme } from "next-themes";
 import Link from "next/link";
-import { ArrowLeft, Pencil } from "lucide-react";
+import { toPng } from "html-to-image";
+import { ArrowLeft, Camera, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -30,11 +32,43 @@ function ProblemDetailContent() {
   const searchParams = useSearchParams();
   const isDemo = searchParams.get("demo") === "true";
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [problem, setProblem] = useState<Problem | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleCopyAsImage = useCallback(async () => {
+    if (!contentRef.current) return;
+    setIsCapturing(true);
+    try {
+      const dataUrl = await toPng(contentRef.current, {
+        pixelRatio: 2,
+        backgroundColor: resolvedTheme === "dark" ? "#1b1b1b" : "#ffffff",
+      });
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ]);
+        toast.success("Copied to clipboard as image");
+      } catch {
+        const link = document.createElement("a");
+        link.download = `fixlog-${id}.png`;
+        link.href = dataUrl;
+        link.click();
+        toast.success("Downloaded as image");
+      }
+    } catch {
+      toast.error("Failed to capture image");
+    } finally {
+      setIsCapturing(false);
+    }
+  }, [id, resolvedTheme]);
 
   const backHref = isDemo ? "/problems?demo=true" : "/problems";
 
@@ -152,6 +186,15 @@ function ProblemDetailContent() {
               <Button
                 variant="outline"
                 size="sm"
+                onClick={handleCopyAsImage}
+                disabled={isCapturing}
+              >
+                <Camera className="mr-1 h-4 w-4" />
+                {isCapturing ? "Capturing..." : "Copy as image"}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setEditing(true)}
               >
                 <Pencil className="mr-1 h-4 w-4" />
@@ -161,35 +204,39 @@ function ProblemDetailContent() {
             </div>
           </div>
 
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {problem.tags.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
+          <div ref={contentRef} className="mt-4 rounded-lg border bg-background p-6">
+            <h2 className="text-xl font-bold">{problem.title}</h2>
+
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {problem.tags.map((tag) => (
+                <Badge key={tag} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+
+            <p className="mt-1 text-xs text-muted-foreground">
+              Created {new Date(problem.createdAt).toLocaleDateString()}
+              {problem.updatedAt !== problem.createdAt &&
+                ` · Updated ${new Date(problem.updatedAt).toLocaleDateString()}`}
+            </p>
+
+            <Separator className="my-6" />
+
+            <section className="mb-6">
+              <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                Problem
+              </h2>
+              <MarkdownRenderer content={problem.description} />
+            </section>
+
+            <section>
+              <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                Solution
+              </h2>
+              <MarkdownRenderer content={problem.solution} />
+            </section>
           </div>
-
-          <p className="mt-1 text-xs text-muted-foreground">
-            Created {new Date(problem.createdAt).toLocaleDateString()}
-            {problem.updatedAt !== problem.createdAt &&
-              ` · Updated ${new Date(problem.updatedAt).toLocaleDateString()}`}
-          </p>
-
-          <Separator className="my-6" />
-
-          <section className="mb-6">
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Problem
-            </h2>
-            <MarkdownRenderer content={problem.description} />
-          </section>
-
-          <section>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Solution
-            </h2>
-            <MarkdownRenderer content={problem.solution} />
-          </section>
         </div>
       )}
     </PageContainer>
