@@ -35,6 +35,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddSingleton<IProblemService, ProblemService>();
 
 builder.Services.AddOpenApi();
 
@@ -51,5 +52,6 @@ app.UseAuthorization();
 
 app.MapGet("/api/health", () => Results.Ok(new { status = "healthy" }));
 app.MapAuthEndpoints();
+app.MapProblemEndpoints();
 
 app.Run();
