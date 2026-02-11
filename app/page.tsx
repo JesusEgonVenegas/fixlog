@@ -34,16 +34,16 @@ const demoProblem = [
       "PM2 ecosystem config had the wrong port. Updated ecosystem.config.js to use PORT=3000...",
   },
   {
-    title: "Docker container OOM killed in production",
-    tags: ["docker", "java", "memory"],
+    title: "Washing machine error code F21 — won't drain",
+    tags: ["appliance", "washing-machine", "repair"],
     preview:
-      "Set JVM heap to 70% of container memory with -XX:MaxRAMPercentage=70.0...",
+      "Found a sock and coins jamming the pump impeller. Cleaned the drain filter...",
   },
   {
-    title: "SSH connection drops after idle timeout",
-    tags: ["ssh", "linux", "networking"],
+    title: "Check engine light — code P0420",
+    tags: ["car", "check-engine", "diagnostics"],
     preview:
-      "Added ServerAliveInterval 60 and ServerAliveCountMax 3 to ~/.ssh/config...",
+      "Replaced the downstream O2 sensor ($45 part) instead of the catalytic converter...",
   },
 ];
 
