@@ -5,11 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ProblemCardProps {
   problem: Problem;
+  demo?: boolean;
 }
 
-export function ProblemCard({ problem }: ProblemCardProps) {
+export function ProblemCard({ problem, demo }: ProblemCardProps) {
+  const href = demo
+    ? `/problems/${problem.id}?demo=true`
+    : `/problems/${problem.id}`;
+
   return (
-    <Link href={`/problems/${problem.id}`} className="block">
+    <Link href={href} className="block">
       <Card className="transition-colors hover:border-primary/30">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-2">

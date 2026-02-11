@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,22 @@ import { ProblemForm } from "@/components/problems/problem-form";
 import { DeleteDialog } from "@/components/problems/delete-dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { Problem, CreateProblemInput } from "@/types";
+import { mockProblems } from "@/lib/mock-data";
 import * as api from "@/lib/api";
 import { toast } from "sonner";
 
 export default function ProblemDetailPage() {
+  return (
+    <Suspense fallback={<PageContainer><p className="py-12 text-center text-muted-foreground">Loading...</p></PageContainer>}>
+      <ProblemDetailContent />
+    </Suspense>
+  );
+}
+
+function ProblemDetailContent() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const isDemo = searchParams.get("demo") === "true";
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [problem, setProblem] = useState<Problem | null>(null);
@@ -24,7 +35,15 @@ export default function ProblemDetailPage() {
   const [editing, setEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const backHref = isDemo ? "/problems?demo=true" : "/problems";
+
   useEffect(() => {
+    if (isDemo) {
+      const found = mockProblems.find((p) => p.id === id) ?? null;
+      setProblem(found);
+      setLoading(false);
+      return;
+    }
     if (authLoading) return;
     if (!isAuthenticated) {
       router.push("/login");
@@ -35,9 +54,15 @@ export default function ProblemDetailPage() {
       .then(setProblem)
       .catch(() => toast.error("Problem not found"))
       .finally(() => setLoading(false));
-  }, [id, isAuthenticated, authLoading, router]);
+  }, [id, isDemo, isAuthenticated, authLoading, router]);
 
   async function handleUpdate(data: CreateProblemInput) {
+    if (isDemo) {
+      setProblem((prev) => prev ? { ...prev, ...data, updatedAt: new Date().toISOString() } : prev);
+      setEditing(false);
+      toast.success("Updated (demo — won't persist on refresh)");
+      return;
+    }
     try {
       const updated = await api.updateProblem(id, data);
       setProblem(updated);
@@ -49,6 +74,11 @@ export default function ProblemDetailPage() {
   }
 
   async function handleDelete() {
+    if (isDemo) {
+      toast.success("Deleted (demo)");
+      router.push("/problems?demo=true");
+      return;
+    }
     setIsDeleting(true);
     try {
       await api.deleteProblem(id);
@@ -60,7 +90,7 @@ export default function ProblemDetailPage() {
     }
   }
 
-  if (loading || authLoading) {
+  if (loading || (!isDemo && authLoading)) {
     return (
       <PageContainer>
         <p className="py-12 text-center text-muted-foreground">Loading...</p>
@@ -73,7 +103,7 @@ export default function ProblemDetailPage() {
       <PageContainer>
         <p className="py-12 text-center text-muted-foreground">
           Problem not found.{" "}
-          <Link href="/problems" className="text-primary underline">
+          <Link href={backHref} className="text-primary underline">
             Back to list
           </Link>
         </p>
@@ -85,7 +115,7 @@ export default function ProblemDetailPage() {
     <PageContainer>
       <div className="mb-6">
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/problems">
+          <Link href={backHref}>
             <ArrowLeft className="mr-1 h-4 w-4" />
             Back
           </Link>

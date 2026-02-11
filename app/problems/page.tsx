@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { Suspense, useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/layout/page-container";
@@ -11,6 +12,7 @@ import { TagFilter } from "@/components/problems/tag-filter";
 import { useFuzzySearch } from "@/hooks/use-fuzzy-search";
 import { useAuth } from "@/hooks/use-auth";
 import { Problem } from "@/types";
+import { mockProblems } from "@/lib/mock-data";
 import * as api from "@/lib/api";
 
 function getAllTags(problems: Problem[]): string[] {
@@ -20,6 +22,16 @@ function getAllTags(problems: Problem[]): string[] {
 }
 
 export default function ProblemsPage() {
+  return (
+    <Suspense fallback={<PageContainer><p className="py-12 text-center text-muted-foreground">Loading...</p></PageContainer>}>
+      <ProblemsContent />
+    </Suspense>
+  );
+}
+
+function ProblemsContent() {
+  const searchParams = useSearchParams();
+  const isDemo = searchParams.get("demo") === "true";
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,6 +40,11 @@ export default function ProblemsPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
+    if (isDemo) {
+      setProblems([...mockProblems]);
+      setLoading(false);
+      return;
+    }
     if (authLoading) return;
     if (!isAuthenticated) {
       setLoading(false);
@@ -42,7 +59,7 @@ export default function ProblemsPage() {
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [isAuthenticated, authLoading]);
+  }, [isDemo, isAuthenticated, authLoading]);
 
   const allTags = useMemo(() => getAllTags(problems), [problems]);
   const searched = useFuzzySearch(problems, query);
@@ -57,7 +74,7 @@ export default function ProblemsPage() {
   const handleQueryChange = useCallback((v: string) => setQuery(v), []);
   const handleTagChange = useCallback((t: string[]) => setSelectedTags(t), []);
 
-  if (!authLoading && !isAuthenticated) {
+  if (!isDemo && !authLoading && !isAuthenticated) {
     return (
       <PageContainer>
         <div className="py-20 text-center">
@@ -81,9 +98,22 @@ export default function ProblemsPage() {
   return (
     <PageContainer>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Problems</h1>
+        <div>
+          <h1 className="text-2xl font-bold">
+            {isDemo ? "Demo Problems" : "Problems"}
+          </h1>
+          {isDemo && (
+            <p className="mt-1 text-sm text-muted-foreground">
+              Sample data &mdash;{" "}
+              <Link href="/register" className="text-primary underline">
+                sign up
+              </Link>{" "}
+              to track your own fixes.
+            </p>
+          )}
+        </div>
         <Button asChild>
-          <Link href="/problems/new">
+          <Link href={isDemo ? "/problems/new?demo=true" : "/problems/new"}>
             <Plus className="mr-1 h-4 w-4" />
             New Problem
           </Link>
@@ -106,7 +136,7 @@ export default function ProblemsPage() {
       ) : filtered.length === 0 ? (
         <p className="py-12 text-center text-muted-foreground">
           No problems found. Try a different search or{" "}
-          <Link href="/problems/new" className="text-primary underline">
+          <Link href={isDemo ? "/problems/new?demo=true" : "/problems/new"} className="text-primary underline">
             create one
           </Link>
           .
@@ -114,7 +144,7 @@ export default function ProblemsPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {filtered.map((problem) => (
-            <ProblemCard key={problem.id} problem={problem} />
+            <ProblemCard key={problem.id} problem={problem} demo={isDemo} />
           ))}
         </div>
       )}
