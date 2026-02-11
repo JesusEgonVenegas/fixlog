@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { PageContainer } from "@/components/layout/page-container";
+import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { ProblemForm } from "@/components/problems/problem-form";
 import { DeleteDialog } from "@/components/problems/delete-dialog";
 import { useAuth } from "@/hooks/use-auth";
@@ -180,18 +181,14 @@ function ProblemDetailContent() {
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Problem
             </h2>
-            <p className="whitespace-pre-wrap text-sm leading-relaxed">
-              {problem.description}
-            </p>
+            <MarkdownRenderer content={problem.description} />
           </section>
 
           <section>
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Solution
             </h2>
-            <p className="whitespace-pre-wrap text-sm leading-relaxed">
-              {problem.solution}
-            </p>
+            <MarkdownRenderer content={problem.solution} />
           </section>
         </div>
       )}

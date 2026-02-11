@@ -70,6 +70,9 @@ export function ProblemForm({
           rows={4}
           required
         />
+        <p className="text-xs text-muted-foreground">
+          Supports markdown with code blocks
+        </p>
       </div>
 
       <div className="space-y-2">
