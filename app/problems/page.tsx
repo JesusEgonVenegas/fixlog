@@ -9,22 +9,40 @@ import { SearchBar } from "@/components/problems/search-bar";
 import { ProblemCard } from "@/components/problems/problem-card";
 import { TagFilter } from "@/components/problems/tag-filter";
 import { useFuzzySearch } from "@/hooks/use-fuzzy-search";
+import { useAuth } from "@/hooks/use-auth";
 import { Problem } from "@/types";
-import { getAllTags } from "@/lib/mock-data";
 import * as api from "@/lib/api";
 
+function getAllTags(problems: Problem[]): string[] {
+  const tagSet = new Set<string>();
+  problems.forEach((p) => p.tags.forEach((t) => tagSet.add(t)));
+  return Array.from(tagSet).sort();
+}
+
 export default function ProblemsPage() {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
-    api.getProblems().then((data) => {
-      setProblems(data);
+    if (authLoading) return;
+    if (!isAuthenticated) {
       setLoading(false);
-    });
-  }, []);
+      return;
+    }
+    setLoading(true);
+    api
+      .getProblems()
+      .then((data) => {
+        setProblems(data);
+        setError(null);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [isAuthenticated, authLoading]);
 
   const allTags = useMemo(() => getAllTags(problems), [problems]);
   const searched = useFuzzySearch(problems, query);
@@ -38,6 +56,27 @@ export default function ProblemsPage() {
 
   const handleQueryChange = useCallback((v: string) => setQuery(v), []);
   const handleTagChange = useCallback((t: string[]) => setSelectedTags(t), []);
+
+  if (!authLoading && !isAuthenticated) {
+    return (
+      <PageContainer>
+        <div className="py-20 text-center">
+          <h2 className="mb-2 text-xl font-semibold">Sign in to view your problems</h2>
+          <p className="mb-6 text-muted-foreground">
+            You need an account to track and search your fixes.
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Button asChild>
+              <Link href="/login">Log in</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/register">Sign up</Link>
+            </Button>
+          </div>
+        </div>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
@@ -62,6 +101,8 @@ export default function ProblemsPage() {
 
       {loading ? (
         <p className="py-12 text-center text-muted-foreground">Loading...</p>
+      ) : error ? (
+        <p className="py-12 text-center text-destructive">{error}</p>
       ) : filtered.length === 0 ? (
         <p className="py-12 text-center text-muted-foreground">
           No problems found. Try a different search or{" "}
