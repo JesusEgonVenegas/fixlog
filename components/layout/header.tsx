@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Wrench, LogOut, Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/hooks/use-auth";
 
 export function Header() {
@@ -55,17 +56,20 @@ export function Header() {
               )}
             </>
           )}
+          <ThemeToggle />
         </nav>
 
         {/* Mobile toggle */}
-        <Button
-          variant="ghost"
-          size="sm"
-          className="sm:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+        <div className="flex items-center gap-1 sm:hidden">
+          <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       {/* Mobile nav */}
