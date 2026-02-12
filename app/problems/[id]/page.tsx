@@ -4,7 +4,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { toPng } from "html-to-image";
+import { toBlob } from "html-to-image";
 import { ArrowLeft, Camera, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -45,22 +45,26 @@ function ProblemDetailContent() {
     if (!contentRef.current) return;
     setIsCapturing(true);
     try {
-      const dataUrl = await toPng(contentRef.current, {
+      const blob = await toBlob(contentRef.current, {
         pixelRatio: 2,
         backgroundColor: resolvedTheme === "dark" ? "#1b1b1b" : "#ffffff",
+        skipFonts: true,
+        filter: (node) =>
+          !(node instanceof HTMLElement && node.dataset.excludeCapture),
       });
-      const res = await fetch(dataUrl);
-      const blob = await res.blob();
+      if (!blob) throw new Error("Capture returned empty");
       try {
         await navigator.clipboard.write([
           new ClipboardItem({ "image/png": blob }),
         ]);
         toast.success("Copied to clipboard as image");
       } catch {
+        const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.download = `fixlog-${id}.png`;
-        link.href = dataUrl;
+        link.href = url;
         link.click();
+        URL.revokeObjectURL(url);
         toast.success("Downloaded as image");
       }
     } catch {
@@ -180,7 +184,7 @@ function ProblemDetailContent() {
         </div>
       ) : (
         <div className="max-w-2xl">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-4" data-exclude-capture>
             <h1 className="text-2xl font-bold">{problem.title}</h1>
             <div className="flex shrink-0 gap-2">
               <Button

@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { Search, Tags, Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageContainer } from "@/components/layout/page-container";
+import { LandingCTA } from "@/components/landing-cta";
 
 const features = [
   {
@@ -62,14 +61,7 @@ export default function Home() {
               make, and the fixes you discover. Search your personal knowledge
               base in seconds.
             </p>
-            <div className="mt-8 flex items-center justify-center gap-4">
-              <Button size="lg" asChild>
-                <Link href="/register">Get Started</Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/problems?demo=true">View Demo</Link>
-              </Button>
-            </div>
+            <LandingCTA />
           </div>
         </PageContainer>
       </section>

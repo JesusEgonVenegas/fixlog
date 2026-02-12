@@ -133,6 +133,19 @@ function ProblemsContent() {
         <p className="py-12 text-center text-muted-foreground">Loading...</p>
       ) : error ? (
         <p className="py-12 text-center text-destructive">{error}</p>
+      ) : filtered.length === 0 && !isDemo && problems.length === 0 && !query ? (
+        <div className="py-20 text-center">
+          <h2 className="mb-2 text-xl font-semibold">Welcome to FixLog!</h2>
+          <p className="mb-6 text-muted-foreground">
+            Start building your personal knowledge base by recording your first fix.
+          </p>
+          <Button asChild>
+            <Link href="/problems/new">
+              <Plus className="mr-1 h-4 w-4" />
+              Create your first fix
+            </Link>
+          </Button>
+        </div>
       ) : filtered.length === 0 ? (
         <p className="py-12 text-center text-muted-foreground">
           No problems found. Try a different search or{" "}
