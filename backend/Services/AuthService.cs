@@ -16,6 +16,15 @@ public class AuthService : IAuthService
 
     public AuthResponse? Register(RegisterRequest request)
     {
+        if (request.Password.Length < 8
+            || !request.Password.Any(char.IsUpper)
+            || !request.Password.Any(char.IsLower)
+            || !request.Password.Any(char.IsDigit))
+        {
+            throw new ArgumentException(
+                "Password must be at least 8 characters and include uppercase, lowercase, and a number");
+        }
+
         if (_users.Values.Any(u => u.Email == request.Email))
             return null;
 

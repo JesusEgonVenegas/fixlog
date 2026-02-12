@@ -5,6 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function validatePassword(password: string): string[] {
+  const failures: string[] = [];
+  if (password.length < 8) failures.push("At least 8 characters");
+  if (!/[A-Z]/.test(password)) failures.push("At least one uppercase letter");
+  if (!/[a-z]/.test(password)) failures.push("At least one lowercase letter");
+  if (!/\d/.test(password)) failures.push("At least one number");
+  return failures;
+}
+
 export function stripMarkdown(text: string): string {
   return text
     .replace(/```[\s\S]*?```/g, "")       // fenced code blocks

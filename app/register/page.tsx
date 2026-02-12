@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { PageContainer } from "@/components/layout/page-container";
 import { useAuth } from "@/hooks/use-auth";
+import { validatePassword } from "@/lib/utils";
 import { toast } from "sonner";
 
 export default function RegisterPage() {
@@ -37,8 +38,7 @@ export default function RegisterPage() {
       toast.error("Passwords do not match");
       return;
     }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    if (validatePassword(password).length > 0) {
       return;
     }
     setIsSubmitting(true);
@@ -91,11 +91,36 @@ export default function RegisterPage() {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="At least 6 characters"
+                  placeholder="At least 8 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                {password && (() => {
+                  const failing = validatePassword(password);
+                  return (
+                    <ul className="space-y-1 text-sm">
+                      {[
+                        "At least 8 characters",
+                        "At least one uppercase letter",
+                        "At least one lowercase letter",
+                        "At least one number",
+                      ].map((rule) => {
+                        const passed = !failing.includes(rule);
+                        return (
+                          <li key={rule} className="flex items-center gap-2">
+                            <span className={passed ? "text-green-500" : "text-muted-foreground"}>
+                              {passed ? "\u2713" : "\u2022"}
+                            </span>
+                            <span className={passed ? "text-green-500" : "text-muted-foreground"}>
+                              {rule}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  );
+                })()}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm password</Label>
