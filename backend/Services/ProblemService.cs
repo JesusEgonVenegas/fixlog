@@ -1,26 +1,33 @@
-using System.Collections.Concurrent;
+using FixLog.Api.Data;
 using FixLog.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FixLog.Api.Services;
 
 public class ProblemService : IProblemService
 {
-    private readonly ConcurrentDictionary<string, Problem> _problems = new();
+    private readonly FixLogDbContext _db;
 
-    public List<Problem> GetByUser(string userId)
+    public ProblemService(FixLogDbContext db)
     {
-        return _problems.Values
+        _db = db;
+    }
+
+    public async Task<List<Problem>> GetByUserAsync(string userId)
+    {
+        return await _db.Problems
             .Where(p => p.UserId == userId)
             .OrderByDescending(p => p.CreatedAt)
-            .ToList();
+            .ToListAsync();
     }
 
-    public Problem? GetById(string id, string userId)
+    public async Task<Problem?> GetByIdAsync(string id, string userId)
     {
-        return _problems.GetValueOrDefault(id) is { } p && p.UserId == userId ? p : null;
+        return await _db.Problems
+            .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
     }
 
-    public Problem Create(string userId, string title, string description, string solution, List<string> tags)
+    public async Task<Problem> CreateAsync(string userId, string title, string description, string solution, List<string> tags)
     {
         var problem = new Problem
         {
@@ -30,13 +37,16 @@ public class ProblemService : IProblemService
             Tags = tags,
             UserId = userId
         };
-        _problems[problem.Id] = problem;
+        _db.Problems.Add(problem);
+        await _db.SaveChangesAsync();
         return problem;
     }
 
-    public Problem? Update(string id, string userId, string? title, string? description, string? solution, List<string>? tags)
+    public async Task<Problem?> UpdateAsync(string id, string userId, string? title, string? description, string? solution, List<string>? tags)
     {
-        if (_problems.GetValueOrDefault(id) is not { } problem || problem.UserId != userId)
+        var problem = await _db.Problems
+            .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+        if (problem is null)
             return null;
 
         if (title is not null) problem.Title = title;
@@ -45,14 +55,19 @@ public class ProblemService : IProblemService
         if (tags is not null) problem.Tags = tags;
         problem.UpdatedAt = DateTime.UtcNow;
 
+        await _db.SaveChangesAsync();
         return problem;
     }
 
-    public bool Delete(string id, string userId)
+    public async Task<bool> DeleteAsync(string id, string userId)
     {
-        if (_problems.GetValueOrDefault(id) is not { } problem || problem.UserId != userId)
+        var problem = await _db.Problems
+            .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+        if (problem is null)
             return false;
 
-        return _problems.TryRemove(id, out _);
+        _db.Problems.Remove(problem);
+        await _db.SaveChangesAsync();
+        return true;
     }
 }

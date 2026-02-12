@@ -1,20 +1,22 @@
-using System.Collections.Concurrent;
+using FixLog.Api.Data;
 using FixLog.Api.DTOs;
 using FixLog.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FixLog.Api.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly ConcurrentDictionary<string, User> _users = new();
+    private readonly FixLogDbContext _db;
     private readonly ITokenService _tokenService;
 
-    public AuthService(ITokenService tokenService)
+    public AuthService(FixLogDbContext db, ITokenService tokenService)
     {
+        _db = db;
         _tokenService = tokenService;
     }
 
-    public AuthResponse? Register(RegisterRequest request)
+    public async Task<AuthResponse?> RegisterAsync(RegisterRequest request)
     {
         if (request.Password.Length < 8
             || !request.Password.Any(char.IsUpper)
@@ -25,7 +27,7 @@ public class AuthService : IAuthService
                 "Password must be at least 8 characters and include uppercase, lowercase, and a number");
         }
 
-        if (_users.Values.Any(u => u.Email == request.Email))
+        if (await _db.Users.AnyAsync(u => u.Email == request.Email))
             return null;
 
         var user = new User
@@ -35,14 +37,16 @@ public class AuthService : IAuthService
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
         };
 
-        _users[user.Id] = user;
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
+
         var token = _tokenService.GenerateToken(user);
         return new AuthResponse(token, new UserDto(user.Id, user.Name, user.Email));
     }
 
-    public AuthResponse? Login(LoginRequest request)
+    public async Task<AuthResponse?> LoginAsync(LoginRequest request)
     {
-        var user = _users.Values.FirstOrDefault(u => u.Email == request.Email);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             return null;
 

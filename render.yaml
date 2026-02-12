@@ -11,6 +11,10 @@ services:
         generateValue: true
       - key: ALLOWED_ORIGINS
         value: https://fixlog-web.onrender.com
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: fixlog-db
+          property: connectionString
 
   - type: web
     name: fixlog-web
@@ -21,3 +25,7 @@ services:
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://fixlog-api.onrender.com
+
+databases:
+  - name: fixlog-db
+    plan: free
