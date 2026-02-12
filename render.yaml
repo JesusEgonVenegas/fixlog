@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: fixlog-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Jwt__Key
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: https://fixlog-web.onrender.com
+
+  - type: web
+    name: fixlog-web
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://fixlog-api.onrender.com
