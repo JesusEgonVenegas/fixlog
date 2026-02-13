@@ -1,6 +1,7 @@
 # FixLog
 
 A personal knowledge base for tracking problems, diagnoses, and solutions. Never re-solve the same issue twice.
+[FixLog](https://fixlog-web.onrender.com/problems)
 
 ## Motivation
 
@@ -39,7 +40,7 @@ Every developer (and tinkerer) has fixed something only to hit the same wall mon
 
 ```bash
 # Clone the repo
-git clone https://github.com/<your-username>/fixlog.git
+git clone https://github.com/JesusEgonVenegas/fixlog.git
 cd fixlog
 
 # Install frontend dependencies
