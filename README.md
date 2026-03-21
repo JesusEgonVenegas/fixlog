@@ -2,7 +2,7 @@
 
 > A personal knowledge base for tracking problems, diagnoses, and solutions. Never re-solve the same problem twice.
 
-**[Live Demo](https://fixlog-web.onrender.com/problems)** · **[GitHub](https://github.com/JesusEgonVenegas/fixlog)**
+**[Live Demo](https://fixlog-web.onrender.com)** · **[GitHub](https://github.com/JesusEgonVenegas/fixlog)**
 
 ---
 
