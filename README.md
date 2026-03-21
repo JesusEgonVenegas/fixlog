@@ -1,45 +1,56 @@
 # FixLog
 
-A personal knowledge base for tracking problems, diagnoses, and solutions. Never re-solve the same issue twice.
-[FixLog](https://fixlog-web.onrender.com/problems)
+> A personal knowledge base for tracking problems, diagnoses, and solutions. Never re-solve the same problem twice.
 
-## Motivation
+**[Live Demo](https://fixlog-web.onrender.com/problems)** · **[GitHub](https://github.com/JesusEgonVenegas/fixlog)**
 
-Every developer (and tinkerer) has fixed something only to hit the same wall months later. FixLog gives those hard-won fixes a permanent, searchable home so you can recall them in seconds instead of re-diagnosing from scratch.
+---
+
+## What it is
+
+Every developer hits the same wall twice — a cryptic error, a misconfigured service, an obscure dependency conflict. FixLog gives those hard-won fixes a permanent, searchable home so you can find them in seconds instead of re-diagnosing from scratch.
+
+Log it once. Find it forever.
+
+---
 
 ## Features
 
-- **Fuzzy search** — find any fix instantly across titles, descriptions, and solutions
-- **Tag filtering** — organize entries with tags like `nginx`, `docker`, `car`, or anything else
+- **Fuzzy search** — find any fix instantly across titles, descriptions, and solutions using Fuse.js
+- **Tag filtering** — organize entries with custom tags like `nginx`, `docker`, `auth`, or anything else
 - **Markdown with syntax highlighting** — write rich problem descriptions and solutions with fenced code blocks
 - **Dark mode** — light, dark, and system-preference themes
 - **Copy as image** — share a problem card as a PNG screenshot
-- **JWT authentication** — secure per-user problem storage
+- **JWT authentication** — secure, per-user problem storage
 - **Demo mode** — explore the app without creating an account
+
+---
 
 ## Tech Stack
 
-| Layer     | Technology                                    |
-| --------- | --------------------------------------------- |
-| Framework | Next.js 16 (App Router)                       |
-| UI        | React 19, Tailwind CSS v4, shadcn/ui          |
-| Language  | TypeScript                                    |
-| Search    | Fuse.js (client-side fuzzy search)            |
-| Backend   | .NET 9 Web API                                |
-| Database  | SQLite (development), easily swappable via EF |
-| Auth      | JWT Bearer tokens                             |
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| UI | React 19, Tailwind CSS v4, shadcn/ui |
+| Language | TypeScript |
+| Search | Fuse.js (client-side fuzzy search) |
+| Backend | .NET 9 Web API (C#) |
+| Database | SQLite via Entity Framework Core |
+| Auth | JWT Bearer tokens |
+| Deployment | Render |
+
+---
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 20+
-- .NET 9 SDK (for the backend)
+- .NET 9 SDK
 
 ### Install & Run
 
 ```bash
-# Clone the repo
 git clone https://github.com/JesusEgonVenegas/fixlog.git
 cd fixlog
 
@@ -51,38 +62,41 @@ cd backend
 dotnet run
 
 # Start the frontend
-cd ..
 npm run dev
 ```
 
-The app will be available at [http://localhost:3000](http://localhost:3000).
+App at **http://localhost:3000** · API at **http://localhost:5062**
 
 ### Environment Variables
 
-| Variable               | Default                  | Description          |
-| ---------------------- | ------------------------ | -------------------- |
-| `NEXT_PUBLIC_API_URL`  | `http://localhost:5062`  | Backend API base URL |
+| Variable | Default | Description |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:5062` | Backend API base URL |
+
+---
 
 ## Project Structure
 
 ```
 fixlog/
 ├── app/                  # Next.js pages & layouts (App Router)
-│   ├── login/            # Login page
-│   ├── register/         # Registration page
+│   ├── login/
+│   ├── register/
 │   └── problems/         # Problem list, detail, and creation pages
 ├── components/           # Reusable UI components
 │   ├── layout/           # Header, footer, page container
-│   ├── problems/         # Problem card, form, search, tags
+│   ├── problems/         # Problem card, form, search, tag filter
 │   └── ui/               # shadcn/ui primitives
 ├── contexts/             # React Context providers (auth)
 ├── hooks/                # Custom hooks (auth, fuzzy search)
 ├── lib/                  # Utilities, API client, auth helpers
 ├── types/                # TypeScript interfaces
-├── backend/              # .NET 9 Web API
-└── public/               # Static assets
+└── backend/              # .NET 9 Web API (C#)
 ```
 
-## Screenshots
+---
 
-_Coming soon._
+## Author
+
+**Jesus Egon Venegas Warner**
+[LinkedIn](https://www.linkedin.com/in/jesus-egon-venegas-warner) · [GitHub](https://github.com/JesusEgonVenegas)
