@@ -1,5 +1,4 @@
 import { Search, Tags, Zap } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageContainer } from "@/components/layout/page-container";
 import { LandingCTA } from "@/components/landing-cta";
@@ -49,14 +48,20 @@ const demoProblem = [
 export default function Home() {
   return (
     <>
-      <section className="py-20 md:py-32">
+      <section
+        className="py-20 md:py-32"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.22 0.05 168 / 0.3), transparent)",
+        }}
+      >
         <PageContainer>
           <div className="mx-auto max-w-2xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+            <h1 className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
               Never lose a fix{" "}
-              <span className="text-muted-foreground">again</span>
+              <span className="text-primary">again</span>
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground">
+            <p className="mt-6 mx-auto max-w-lg text-xl text-muted-foreground">
               A dedicated home for the problems you solve, the diagnoses you
               make, and the fixes you discover. Search your personal knowledge
               base in seconds.
@@ -66,15 +71,15 @@ export default function Home() {
         </PageContainer>
       </section>
 
-      <section className="border-t bg-muted/50 py-16">
+      <section className="border-y border-primary/10 bg-muted/30 py-16">
         <PageContainer>
           <div className="grid gap-8 md:grid-cols-3">
             {features.map((f) => (
               <div key={f.title} className="text-center">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-primary/20 bg-primary/15">
                   <f.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold">{f.title}</h3>
+                <h3 className="font-bold">{f.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {f.description}
                 </p>
@@ -87,11 +92,15 @@ export default function Home() {
       <section className="py-16">
         <PageContainer>
           <h2 className="mb-8 text-center text-2xl font-bold">
-            Your fixes, organized
+            Your fixes,{" "}
+            <span className="text-primary">organized</span>
           </h2>
           <div className="grid gap-4 md:grid-cols-3">
             {demoProblem.map((p) => (
-              <Card key={p.title}>
+              <Card
+                key={p.title}
+                className="border-primary/10 transition-all hover:border-primary/40 hover:shadow-md hover:shadow-primary/5"
+              >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base leading-snug">
                     {p.title}
@@ -103,9 +112,12 @@ export default function Home() {
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {p.tags.map((t) => (
-                      <Badge key={t} variant="secondary" className="text-xs">
+                      <span
+                        key={t}
+                        className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs text-primary"
+                      >
                         {t}
-                      </Badge>
+                      </span>
                     ))}
                   </div>
                 </CardContent>

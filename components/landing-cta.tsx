@@ -11,7 +11,12 @@ export function LandingCTA() {
     return (
       <div className="mt-8 flex items-center justify-center gap-4">
         <Button size="lg" disabled>Get Started</Button>
-        <Button variant="outline" size="lg" asChild>
+        <Button
+          variant="outline"
+          size="lg"
+          className="border-primary/40 text-primary hover:bg-primary/10"
+          asChild
+        >
           <Link href="/problems?demo=true">View Demo</Link>
         </Button>
       </div>
@@ -29,7 +34,12 @@ export function LandingCTA() {
           <Link href="/register">Get Started</Link>
         </Button>
       )}
-      <Button variant="outline" size="lg" asChild>
+      <Button
+        variant="outline"
+        size="lg"
+        className="border-primary/40 text-primary hover:bg-primary/10"
+        asChild
+      >
         <Link href="/problems?demo=true">View Demo</Link>
       </Button>
     </div>
