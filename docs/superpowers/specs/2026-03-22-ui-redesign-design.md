@@ -14,7 +14,7 @@ Redesign FixLog from a default shadcn/ui aesthetic to a bold, modern, product-gr
 
 ## 1. Color System (`globals.css`)
 
-Replace the fully achromatic palette with a mint-accented system.
+Replace the fully achromatic palette with a mint-accented system. The tokens listed below **completely replace** (not augment) the current values in `globals.css`. All unlisted tokens remain at their current shadcn defaults.
 
 ### Light mode tokens
 | Token | Value | Notes |
@@ -55,7 +55,7 @@ Replace the fully achromatic palette with a mint-accented system.
 ## 3. Landing Page (`app/page.tsx`, `components/landing-cta.tsx`)
 
 ### Hero section
-- Background: radial gradient glow — `radial-gradient` from `oklch(0.22 0.05 168 / 0.3)` to `transparent`, centered
+- Background: radial gradient glow via inline `style` attribute on the `<section>` element — `style={{ background: "radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.22 0.05 168 / 0.3), transparent)" }}`
 - Headline: `text-5xl md:text-7xl font-bold tracking-tighter`
 - "again" in headline: `text-primary` (mint) — replaces `text-muted-foreground`
 - Subtext: `text-xl`, `max-w-lg`
@@ -115,7 +115,7 @@ Replace the fully achromatic palette with a mint-accented system.
 - Inputs: `focus:border-primary/60 focus:ring-primary/20`
 - Submit button: mint primary
 - Footer links: `text-primary`
-- Register password strength: weak = red, medium = amber, strong = `text-primary` (mint)
+- Register password rules: keep existing per-rule pass/fail display. Change `text-green-500` (passed) → `text-primary` (mint). Failed rules stay `text-muted-foreground`. No three-level strength meter needed.
 
 ---
 
