@@ -20,23 +20,26 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-          <Wrench className="h-5 w-5" />
+        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-wide">
+          <Wrench className="h-5 w-5 text-primary" />
           FixLog
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-2 sm:flex">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/problems">Problems</Link>
-          </Button>
+        <nav className="hidden items-center gap-4 sm:flex">
+          <Link
+            href="/problems"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Problems
+          </Link>
           {!isLoading && (
             <>
               {isAuthenticated ? (
                 <>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="rounded-full bg-accent px-2 py-0.5 text-sm text-accent-foreground">
                     {user?.name}
                   </span>
                   <Button variant="ghost" size="sm" onClick={handleLogout}>
@@ -46,9 +49,12 @@ export function Header() {
                 </>
               ) : (
                 <>
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href="/login">Log in</Link>
-                  </Button>
+                  <Link
+                    href="/login"
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Log in
+                  </Link>
                   <Button size="sm" asChild>
                     <Link href="/register">Sign up</Link>
                   </Button>
@@ -74,7 +80,7 @@ export function Header() {
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <nav className="flex flex-col gap-1 border-t px-4 py-3 sm:hidden">
+        <nav className="flex flex-col gap-1 border-t border-primary/20 px-4 py-3 sm:hidden">
           <Button
             variant="ghost"
             size="sm"
