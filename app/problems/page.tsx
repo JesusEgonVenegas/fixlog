@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Plus, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/layout/page-container";
 import { SearchBar } from "@/components/problems/search-bar";
@@ -99,7 +99,7 @@ function ProblemsContent() {
     <PageContainer>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-3xl font-bold tracking-tight">
             {isDemo ? "Demo Problems" : "Problems"}
           </h1>
           {isDemo && (
@@ -135,6 +135,9 @@ function ProblemsContent() {
         <p className="py-12 text-center text-destructive">{error}</p>
       ) : filtered.length === 0 && !isDemo && problems.length === 0 && !query ? (
         <div className="py-20 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <Wrench className="h-8 w-8 text-primary" />
+          </div>
           <h2 className="mb-2 text-xl font-semibold">Welcome to FixLog!</h2>
           <p className="mb-6 text-muted-foreground">
             Start building your personal knowledge base by recording your first fix.
