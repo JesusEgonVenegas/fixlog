@@ -2,6 +2,7 @@ import { Search, Tags, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageContainer } from "@/components/layout/page-container";
 import { LandingCTA } from "@/components/landing-cta";
+import { LivingNebula } from "@/components/ui/living-nebula";
 
 const features = [
   {
@@ -48,13 +49,8 @@ const demoProblem = [
 export default function Home() {
   return (
     <>
-      <section
-        className="py-20 md:py-32"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.22 0.05 168 / 0.3), transparent)",
-        }}
-      >
+      <LivingNebula />
+      <section className="py-20 md:py-32">
         <PageContainer>
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
@@ -71,7 +67,7 @@ export default function Home() {
         </PageContainer>
       </section>
 
-      <section className="border-y border-primary/10 bg-muted/30 py-16">
+      <section className="border-y border-primary/10 bg-background/80 py-16 backdrop-blur-sm">
         <PageContainer>
           <div className="grid gap-8 md:grid-cols-3">
             {features.map((f) => (
@@ -89,7 +85,7 @@ export default function Home() {
         </PageContainer>
       </section>
 
-      <section className="py-16">
+      <section className="bg-background/80 py-16 backdrop-blur-sm">
         <PageContainer>
           <h2 className="mb-8 text-center text-2xl font-bold">
             Your fixes,{" "}
