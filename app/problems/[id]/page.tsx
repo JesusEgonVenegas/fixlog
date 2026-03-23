@@ -7,7 +7,6 @@ import Link from "next/link";
 import { toBlob } from "html-to-image";
 import { ArrowLeft, Camera, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { PageContainer } from "@/components/layout/page-container";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -153,12 +152,13 @@ function ProblemDetailContent() {
   return (
     <PageContainer>
       <div className="mb-6">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href={backHref}>
-            <ArrowLeft className="mr-1 h-4 w-4" />
-            Back
-          </Link>
-        </Button>
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Link>
       </div>
 
       {editing ? (
@@ -185,11 +185,12 @@ function ProblemDetailContent() {
       ) : (
         <div className="max-w-2xl">
           <div className="flex items-start justify-between gap-4" data-exclude-capture>
-            <h1 className="text-2xl font-bold">{problem.title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{problem.title}</h1>
             <div className="flex shrink-0 gap-2">
               <Button
                 variant="outline"
                 size="sm"
+                className="border-primary/20 hover:border-primary/50 hover:text-primary"
                 onClick={handleCopyAsImage}
                 disabled={isCapturing}
               >
@@ -199,6 +200,7 @@ function ProblemDetailContent() {
               <Button
                 variant="outline"
                 size="sm"
+                className="border-primary/20 hover:border-primary/50 hover:text-primary"
                 onClick={() => setEditing(true)}
               >
                 <Pencil className="mr-1 h-4 w-4" />
@@ -208,14 +210,17 @@ function ProblemDetailContent() {
             </div>
           </div>
 
-          <div ref={contentRef} className="mt-4 rounded-lg border bg-background p-6">
+          <div ref={contentRef} className="mt-4 rounded-lg border border-primary/15 bg-accent/10 p-6">
             <h2 className="text-xl font-bold">{problem.title}</h2>
 
             <div className="mt-2 flex flex-wrap gap-1.5">
               {problem.tags.map((tag) => (
-                <Badge key={tag} variant="secondary">
+                <span
+                  key={tag}
+                  className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs text-primary"
+                >
                   {tag}
-                </Badge>
+                </span>
               ))}
             </div>
 
@@ -225,7 +230,7 @@ function ProblemDetailContent() {
                 ` · Updated ${new Date(problem.updatedAt).toLocaleDateString()}`}
             </p>
 
-            <Separator className="my-6" />
+            <Separator className="my-6 bg-primary/20" />
 
             <section className="mb-6">
               <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -238,7 +243,9 @@ function ProblemDetailContent() {
               <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 Solution
               </h2>
-              <MarkdownRenderer content={problem.solution} />
+              <div className="rounded-md border border-primary/10 bg-primary/5 p-4">
+                <MarkdownRenderer content={problem.solution} />
+              </div>
             </section>
           </div>
         </div>
