@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,54 +45,66 @@ export default function LoginPage() {
   }
 
   return (
-    <PageContainer>
-      <div className="mx-auto max-w-md pt-16">
-        <Card>
-          <CardHeader>
-            <CardTitle>Log in</CardTitle>
-            <CardDescription>
-              Sign in to your FixLog account to access your fixes.
-            </CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+    <div
+      className="min-h-[calc(100vh-56px)]"
+      style={{
+        background:
+          "radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.22 0.05 168 / 0.3), transparent)",
+      }}
+    >
+      <PageContainer>
+        <div className="mx-auto max-w-md pt-16">
+          <Card className="border-primary/20 shadow-lg shadow-primary/5">
+            <CardHeader>
+              <div className="mb-2 flex items-center gap-2 text-lg font-bold tracking-wide">
+                <Wrench className="h-5 w-5 text-primary" />
+                FixLog
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col gap-3 pt-2">
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Signing in..." : "Sign in"}
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                Don&apos;t have an account?{" "}
-                <Link href="/register" className="text-primary underline">
-                  Sign up
-                </Link>
-              </p>
-            </CardFooter>
-          </form>
-        </Card>
-      </div>
-    </PageContainer>
+              <CardTitle className="text-2xl font-bold tracking-tight">Log in</CardTitle>
+              <CardDescription>
+                Sign in to your FixLog account to access your fixes.
+              </CardDescription>
+            </CardHeader>
+            <form onSubmit={handleSubmit}>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+              </CardContent>
+              <CardFooter className="flex flex-col gap-3 pt-2">
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? "Signing in..." : "Sign in"}
+                </Button>
+                <p className="text-sm text-muted-foreground">
+                  Don&apos;t have an account?{" "}
+                  <Link href="/register" className="text-primary underline">
+                    Sign up
+                  </Link>
+                </p>
+              </CardFooter>
+            </form>
+          </Card>
+        </div>
+      </PageContainer>
+    </div>
   );
 }

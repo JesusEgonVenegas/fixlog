@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,15 +55,26 @@ export default function RegisterPage() {
   }
 
   return (
-    <PageContainer>
-      <div className="mx-auto max-w-md pt-16">
-        <Card>
-          <CardHeader>
-            <CardTitle>Create an account</CardTitle>
-            <CardDescription>
-              Sign up for FixLog to start tracking your fixes.
-            </CardDescription>
-          </CardHeader>
+    <div
+      className="min-h-[calc(100vh-56px)]"
+      style={{
+        background:
+          "radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.22 0.05 168 / 0.3), transparent)",
+      }}
+    >
+      <PageContainer>
+        <div className="mx-auto max-w-md pt-16">
+          <Card className="border-primary/20 shadow-lg shadow-primary/5">
+            <CardHeader>
+              <div className="mb-2 flex items-center gap-2 text-lg font-bold tracking-wide">
+                <Wrench className="h-5 w-5 text-primary" />
+                FixLog
+              </div>
+              <CardTitle className="text-2xl font-bold tracking-tight">Create an account</CardTitle>
+              <CardDescription>
+                Sign up for FixLog to start tracking your fixes.
+              </CardDescription>
+            </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -109,10 +121,10 @@ export default function RegisterPage() {
                         const passed = !failing.includes(rule);
                         return (
                           <li key={rule} className="flex items-center gap-2">
-                            <span className={passed ? "text-green-500" : "text-muted-foreground"}>
-                              {passed ? "\u2713" : "\u2022"}
+                            <span className={passed ? "text-primary" : "text-muted-foreground"}>
+                              {passed ? "✓" : "•"}
                             </span>
-                            <span className={passed ? "text-green-500" : "text-muted-foreground"}>
+                            <span className={passed ? "text-primary" : "text-muted-foreground"}>
                               {rule}
                             </span>
                           </li>
@@ -146,8 +158,9 @@ export default function RegisterPage() {
               </p>
             </CardFooter>
           </form>
-        </Card>
-      </div>
-    </PageContainer>
+          </Card>
+        </div>
+      </PageContainer>
+    </div>
   );
 }
